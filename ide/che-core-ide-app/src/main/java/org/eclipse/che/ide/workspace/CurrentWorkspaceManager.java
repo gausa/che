@@ -10,9 +10,6 @@
  */
 package org.eclipse.che.ide.workspace;
 
-import static java.lang.Boolean.parseBoolean;
-import static org.eclipse.che.api.core.model.workspace.WorkspaceStatus.STOPPED;
-import static org.eclipse.che.api.workspace.shared.Constants.CHE_WORKSPACE_AUTO_START;
 import static org.eclipse.che.ide.workspace.WorkspaceStatusNotification.Phase.STARTING_WORKSPACE_RUNTIME;
 
 import com.google.inject.Inject;
@@ -24,7 +21,6 @@ import org.eclipse.che.ide.CoreLocalizationConstant;
 import org.eclipse.che.ide.api.app.AppContext;
 import org.eclipse.che.ide.api.workspace.event.WorkspaceStartingEvent;
 import org.eclipse.che.ide.api.workspace.model.WorkspaceImpl;
-import org.eclipse.che.ide.bootstrap.BasicIDEInitializedEvent;
 import org.eclipse.che.ide.context.AppContextImpl;
 import org.eclipse.che.ide.resource.Path;
 import org.eclipse.che.ide.ui.dialogs.DialogFactory;
@@ -63,8 +59,6 @@ class CurrentWorkspaceManager {
     this.wsStatusNotification = wsStatusNotification;
     this.startWorkspaceNotification = startWorkspaceNotification;
 
-    eventBus.addHandler(BasicIDEInitializedEvent.TYPE, e -> handleWorkspaceStatus());
-
     // TODO (spi ide): get from CHE_PROJECTS_ROOT environment variable
     ((AppContextImpl) appContext).setProjectsRoot(Path.valueOf("/projects"));
   }
@@ -96,21 +90,5 @@ class CurrentWorkspaceManager {
   /** Stop the current workspace. */
   void stopWorkspace() {
     workspaceServiceClient.stop(appContext.getWorkspaceId());
-  }
-
-  /** Does an appropriate action depending on the current workspace's status. */
-  private void handleWorkspaceStatus() {
-    WorkspaceImpl workspace = appContext.getWorkspace();
-
-    if (workspace.getStatus() == STOPPED) {
-      workspaceServiceClient
-          .getSettings()
-          .then(
-              settings -> {
-                if (parseBoolean(settings.getOrDefault(CHE_WORKSPACE_AUTO_START, "true"))) {
-                  startWorkspace();
-                }
-              });
-    }
   }
 }
