@@ -156,11 +156,6 @@ spec:
             configMapKeyRef:
               key: CHE_PREDEFINED_STACKS_RELOAD__ON__START
               name: che
-        - name: CHE_WORKSPACE_AUTO_START
-          valueFrom:
-            configMapKeyRef:
-              key: CHE_WORKSPACE_AUTO_START
-              name: che
         - name: CHE_INFRA_KUBERNETES_INGRESS_ANNOTATIONS__JSON
           valueFrom:
             configMapKeyRef:

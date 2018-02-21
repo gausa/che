@@ -39,8 +39,6 @@ public final class Constants {
 
   public static final String WS_AGENT_PROCESS_NAME = "CheWsAgent";
 
-  public static final String CHE_WORKSPACE_AUTO_START = "che.workspace.auto_start";
-
   /**
    * Describes time when workspace was created. Should be set/read from {@link
    * Workspace#getAttributes}
